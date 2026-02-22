@@ -58,8 +58,10 @@ preprocessor = ColumnTransformer(
 pipeline = Pipeline([
     ("preprocess", preprocessor),
     ("model", RandomForestClassifier(
-        n_estimators=200,
-        random_state=42
+    n_estimators=80,      # smaller model
+    max_depth=10,         # limits tree size
+    random_state=42,
+    n_jobs=-1
     ))
 ])
 

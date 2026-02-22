@@ -1,7 +1,4 @@
-# Ignore ML models
-models/
-*.pkl
-*.json
+
 
 # Python cache
 __pycache__/
