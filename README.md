@@ -141,7 +141,7 @@ Model files are excluded from GitHub and generated automatically during deployme
 
 1️⃣ Clone repository
 
-git clone https://github.com/your-username/customer-churn-project.git
+git clone https://github.com/yandapalliTejaswini/customer-churn-project.git
 
 cd customer-churn-project
 
