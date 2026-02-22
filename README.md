@@ -1,54 +1,199 @@
-# Customer Churn Prediction
+📊 Customer Churn Prediction & Analytics Dashboard
 
-## Problem
 
-Predict customers likely to leave telecom service.
+🚀 Project Overview
 
-## Tech Stack
+This project builds an end-to-end Machine Learning system to predict whether a telecom customer is likely to leave (churn).
+It includes data preprocessing, model training, evaluation, and an interactive Streamlit dashboard for real-time predictions and business analytics.
 
-Python, Pandas, Scikit-learn, Streamlit
+The goal is to help companies identify high-risk customers and take proactive retention actions.
 
-## Steps
+🎯 Problem Statement
 
-* Data Cleaning
-* Exploratory Data Analysis (EDA)
-* Feature Engineering & Preprocessing
-* Random Forest Model Training
-* Feature Importance Analysis
-* Dashboard Deployment using Streamlit
+Customer churn is a major challenge for telecom companies. Losing customers reduces revenue and increases acquisition costs.
 
-## Model Performance Metrics
+This project predicts customer churn using historical customer data and provides insights through a visual analytics dashboard.
 
-The model performance was evaluated using standard classification metrics:
+🧠 Machine Learning Workflow
 
-* **Accuracy:** ~85%
-* **Precision:** (add value from classification report)
-* **Recall:** (add value from classification report)
-* **F1-Score:** (add value from classification report)
 
-> Metrics were calculated using Scikit-learn's `classification_report` during model evaluation.
+1️⃣ Data Processing
 
-## Business Impact
+Removed unnecessary columns (customerID)
 
-Helps telecom companies identify high-risk customers and apply retention strategies to reduce customer loss.
+Converted TotalCharges to numeric format
 
-## Project Features
+Handled missing values using forward fill
 
-* End-to-end Machine Learning pipeline
-* Automated preprocessing using ColumnTransformer
-* Model persistence using Joblib
-* Interactive Streamlit dashboard
-* Churn risk visualization with Plotly
+Encoded target variable (Churn → 0/1)
 
-## How to Run the Project
+2️⃣ Feature Engineering
 
-```bash
+Automatic preprocessing using ColumnTransformer
+
+StandardScaler for numerical features
+
+OneHotEncoder for categorical features
+
+3️⃣ Model Training
+
+Algorithm: Random Forest Classifier
+
+Train/Test Split: 80/20
+
+Pipeline used for reproducibility
+
+4️⃣ Model Evaluation
+
+Model performance evaluated using:
+
+
+Accuracy
+
+Precision
+
+Recall
+
+F1-Score
+
+Classification Report
+
+📊 Model Performance
+
+Metric	Score
+
+Accuracy	79.6%
+
+Precision	65.8%
+
+Recall	47.9%
+
+F1 Score	55.5%
+
+Metrics are automatically saved and displayed in the dashboard.
+
+💻 Dashboard Features (Streamlit)
+
+The interactive dashboard includes:
+
+✅ Customer churn prediction interface
+
+✅ Churn risk probability gauge chart
+
+✅ Customer analytics visualization
+
+✅ Executive business summary
+
+✅ Model performance KPI metrics
+
+Users can input customer details and instantly view churn risk.
+
+🏗️ Project Architecture
+
+      User Input
+           ↓
+    Streamlit Dashboard
+           ↓
+    Saved ML Pipeline
+           ↓
+    Prediction + Probability
+           ↓
+    Analytics & Visualization
+
+
+🛠️ Tech Stack
+
+Python
+
+Pandas
+
+NumPy
+
+Scikit-learn
+
+Streamlit
+
+Plotly
+
+Joblib
+
+📂 Project Structure
+
+
+customer-churn-project/
+
+      │
+      ├── app.py                # Streamlit dashboard
+      ├── train.py              # Model training pipeline
+      ├── requirements.txt
+      ├── README.md
+      │
+      ├── data/
+      │   └── Telco customer dataset
+      │
+      ├── models/               # Generated automatically
+      │   ├── churn_pipeline.pkl
+      │   └── metrics.json
+
+Model files are excluded from GitHub and generated automatically during deployment.
+
+⚙️ Installation & Run Locally
+
+1️⃣ Clone repository
+
+git clone https://github.com/your-username/customer-churn-project.git
+
+cd customer-churn-project
+
+2️⃣ Install dependencies
+
+pip install -r requirements.txt
+
+3️⃣ Train model
+
 python train.py
+
+4️⃣ Run dashboard
+
+
 streamlit run app.py
-```
 
-## Future Improvements
+🌐 Deployment
 
-* Add feature importance visualization
-* Deploy app online (Streamlit Cloud / Render)
-* Add explainable AI (SHAP/LIME)
+
+The application is deployed using Streamlit Cloud.
+
+Live Demo: (Add your deployed link here)
+
+📈 Business Impact
+
+Identifies customers at high churn risk
+
+Enables targeted retention strategies
+
+Supports data-driven decision making
+
+Improves customer lifetime value
+
+🔮 Future Improvements
+
+Handle class imbalance using SMOTE
+
+Hyperparameter tuning
+
+Feature importance visualization
+
+Explainable AI (SHAP/LIME)
+
+Cloud model monitoring
+
+👨‍💻 Author
+
+Yandapalli Tejaswini
+
+Computer Science Engineering (Data Science)
+Machine Learning & Data Analytics Enthusiast
+
+⭐ If you like this project
+
+Give the repository a ⭐ on GitHub!
