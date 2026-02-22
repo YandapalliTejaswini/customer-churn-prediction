@@ -141,9 +141,9 @@ Model files are excluded from GitHub and generated automatically during deployme
 
 1️⃣ Clone repository
 
-git clone https://github.com/yandapalliTejaswini/customer-churn-project.git
+git clone https://github.com/yandapalliTejaswini/customer-churn-prediction.git
 
-cd customer-churn-project
+cd customer-churn-prediction
 
 2️⃣ Install dependencies
 
