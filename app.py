@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import joblib
+import json
 import plotly.graph_objects as go
 
 # ------------------------------------------------
@@ -38,6 +39,9 @@ font-size:18px;
 # LOAD MODEL
 # ------------------------------------------------
 model = joblib.load("models/churn_pipeline.pkl")
+# Load metrics
+with open("models/metrics.json", "r") as f:
+    metrics = json.load(f)
 
 # ------------------------------------------------
 # SIDEBAR
@@ -132,7 +136,7 @@ if page == "Prediction":
             }
         ))
 
-        st.plotly_chart(fig,width=True)
+        st.plotly_chart(fig, use_container_width=True)
 
         # Explanation
         st.subheader("🧠 AI Explanation")
@@ -173,6 +177,14 @@ elif page == "Analytics":
 else:
 
     st.title("💼 Executive Business Summary")
+    st.subheader("🤖 Model Performance")
+
+    m1, m2, m3, m4 = st.columns(4)
+
+    m1.metric("Accuracy", f"{metrics['accuracy']:.2%}")
+    m2.metric("Precision", f"{metrics['precision']:.2%}")
+    m3.metric("Recall", f"{metrics['recall']:.2%}")
+    m4.metric("F1 Score", f"{metrics['f1_score']:.2%}")
 
     df = pd.read_csv(
         "data/WA_Fn-UseC_-Telco-Customer-Churn.csv"

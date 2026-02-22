@@ -1,0 +1,12 @@
+# Ignore ML models
+models/
+*.pkl
+*.json
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Virtual environment
+venv/
+.env
