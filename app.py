@@ -2,6 +2,8 @@ import streamlit as st
 import pandas as pd
 import joblib
 import json
+import os
+import subprocess
 import plotly.graph_objects as go
 
 # ------------------------------------------------
@@ -11,6 +13,31 @@ st.set_page_config(
     page_title="Customer Churn AI",
     layout="wide"
 )
+
+# ------------------------------------------------
+# AUTO TRAIN MODEL IF NOT EXISTS (DEPLOYMENT SAFE)
+# ------------------------------------------------
+MODEL_PATH = "models/churn_pipeline.pkl"
+METRICS_PATH = "models/metrics.json"
+
+if not os.path.exists(MODEL_PATH):
+    os.makedirs("models", exist_ok=True)
+    subprocess.run(["python", "train.py"])
+
+# Load model
+model = joblib.load(MODEL_PATH)
+
+# Load metrics safely
+if os.path.exists(METRICS_PATH):
+    with open(METRICS_PATH, "r") as f:
+        metrics = json.load(f)
+else:
+    metrics = {
+        "accuracy": 0,
+        "precision": 0,
+        "recall": 0,
+        "f1_score": 0
+    }
 
 # ------------------------------------------------
 # DARK PREMIUM STYLE
@@ -36,15 +63,7 @@ font-size:18px;
 """, unsafe_allow_html=True)
 
 # ------------------------------------------------
-# LOAD MODEL
-# ------------------------------------------------
-model = joblib.load("models/churn_pipeline.pkl")
-# Load metrics
-with open("models/metrics.json", "r") as f:
-    metrics = json.load(f)
-
-# ------------------------------------------------
-# SIDEBAR
+# SIDEBAR NAVIGATION
 # ------------------------------------------------
 page = st.sidebar.radio(
     "📊 Navigation",
@@ -69,7 +88,7 @@ if page == "Prediction":
     with col3:
         contract = st.selectbox(
             "Contract",
-            ["Month-to-month","One year","Two year"]
+            ["Month-to-month", "One year", "Two year"]
         )
 
     col4, col5 = st.columns(2)
@@ -77,38 +96,38 @@ if page == "Prediction":
     with col4:
         internet = st.selectbox(
             "Internet Service",
-            ["DSL","Fiber optic","No"]
+            ["DSL", "Fiber optic", "No"]
         )
 
     with col5:
         payment = st.selectbox(
             "Payment Method",
-            ["Electronic check","Mailed check",
+            ["Electronic check", "Mailed check",
              "Bank transfer (automatic)",
              "Credit card (automatic)"]
         )
 
     # Input dataframe
     input_df = pd.DataFrame({
-        "gender":["Male"],
-        "SeniorCitizen":[0],
-        "Partner":["Yes"],
-        "Dependents":["No"],
-        "tenure":[tenure],
-        "PhoneService":["Yes"],
-        "MultipleLines":["No"],
-        "InternetService":[internet],
-        "OnlineSecurity":["No"],
-        "OnlineBackup":["No"],
-        "DeviceProtection":["No"],
-        "TechSupport":["No"],
-        "StreamingTV":["No"],
-        "StreamingMovies":["No"],
-        "Contract":[contract],
-        "PaperlessBilling":["Yes"],
-        "PaymentMethod":[payment],
-        "MonthlyCharges":[monthly],
-        "TotalCharges":[monthly*tenure]
+        "gender": ["Male"],
+        "SeniorCitizen": [0],
+        "Partner": ["Yes"],
+        "Dependents": ["No"],
+        "tenure": [tenure],
+        "PhoneService": ["Yes"],
+        "MultipleLines": ["No"],
+        "InternetService": [internet],
+        "OnlineSecurity": ["No"],
+        "OnlineBackup": ["No"],
+        "DeviceProtection": ["No"],
+        "TechSupport": ["No"],
+        "StreamingTV": ["No"],
+        "StreamingMovies": ["No"],
+        "Contract": [contract],
+        "PaperlessBilling": ["Yes"],
+        "PaymentMethod": [payment],
+        "MonthlyCharges": [monthly],
+        "TotalCharges": [monthly * tenure]
     })
 
     if st.button("🔮 Predict Customer Churn"):
@@ -124,14 +143,14 @@ if page == "Prediction":
         # Gauge Chart
         fig = go.Figure(go.Indicator(
             mode="gauge+number",
-            value=prob*100,
-            title={'text':"Churn Risk (%)"},
+            value=prob * 100,
+            title={'text': "Churn Risk (%)"},
             gauge={
-                'axis':{'range':[0,100]},
-                'steps':[
-                    {'range':[0,30],'color':'green'},
-                    {'range':[30,70],'color':'orange'},
-                    {'range':[70,100],'color':'red'}
+                'axis': {'range': [0, 100]},
+                'steps': [
+                    {'range': [0, 30], 'color': 'green'},
+                    {'range': [30, 70], 'color': 'orange'},
+                    {'range': [70, 100], 'color': 'red'}
                 ],
             }
         ))
@@ -190,8 +209,8 @@ else:
         "data/WA_Fn-UseC_-Telco-Customer-Churn.csv"
     )
 
-    churn_rate = (df["Churn"]=="Yes").mean()*100
-    avg_revenue = df["MonthlyCharges"].mean()*12
+    churn_rate = (df["Churn"] == "Yes").mean() * 100
+    avg_revenue = df["MonthlyCharges"].mean() * 12
 
     c1, c2 = st.columns(2)
 
