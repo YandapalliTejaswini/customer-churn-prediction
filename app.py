@@ -20,11 +20,19 @@ st.set_page_config(
 MODEL_PATH = "models/churn_pipeline.pkl"
 METRICS_PATH = "models/metrics.json"
 
+# Train model if missing
 if not os.path.exists(MODEL_PATH):
-    os.makedirs("models", exist_ok=True)
-    subprocess.run(["python", "train.py"])
 
-# Load model
+    os.makedirs("models", exist_ok=True)
+
+    with st.spinner("⚙️ Training model for first deployment... Please wait."):
+        subprocess.run(["python", "train.py"], check=True)
+
+# Wait until model file exists (important for cloud)
+while not os.path.exists(MODEL_PATH):
+    pass
+
+# Load model safely
 model = joblib.load(MODEL_PATH)
 
 # Load metrics safely
