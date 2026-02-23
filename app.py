@@ -23,6 +23,7 @@ st.set_page_config(page_title="Customer Churn AI", layout="wide")
 MODEL_PATH = "models/churn_pipeline.pkl"
 METRICS_PATH = "models/metrics.json"
 
+# Train model if missing (deployment safe)
 if not os.path.exists(MODEL_PATH):
     os.makedirs("models", exist_ok=True)
     with st.spinner("⚙️ Training model for first deployment..."):
@@ -59,7 +60,7 @@ font-size:18px;
 """, unsafe_allow_html=True)
 
 # ------------------------------------------------
-# SIDEBAR
+# SIDEBAR NAVIGATION
 # ------------------------------------------------
 page = st.sidebar.radio(
     "📊 Navigation",
@@ -122,7 +123,7 @@ if page == "Prediction":
         prob = model.predict_proba(input_df)[0][1]
         prediction = int(model.predict(input_df)[0])
 
-        # SAVE prediction
+        # Store prediction
         st.session_state.predictions.append(prediction)
 
         if prediction == 1:
@@ -132,14 +133,14 @@ if page == "Prediction":
 
         fig = go.Figure(go.Indicator(
             mode="gauge+number",
-            value=prob*100,
-            title={'text':"Churn Risk (%)"},
+            value=prob * 100,
+            title={'text': "Churn Risk (%)"},
             gauge={
-                'axis':{'range':[0,100]},
-                'steps':[
-                    {'range':[0,30],'color':'green'},
-                    {'range':[30,70],'color':'orange'},
-                    {'range':[70,100],'color':'red'}
+                'axis': {'range': [0, 100]},
+                'steps': [
+                    {'range': [0, 30], 'color': 'green'},
+                    {'range': [30, 70], 'color': 'orange'},
+                    {'range': [70, 100], 'color': 'red'}
                 ],
             }
         ))
@@ -164,12 +165,13 @@ elif page == "Analytics":
     col2.line_chart(df["MonthlyCharges"])
 
 # =================================================
-# EXECUTIVE SUMMARY
+# EXECUTIVE SUMMARY PAGE
 # =================================================
 else:
 
     st.title("💼 Executive Business Summary")
 
+    # ---------- MODEL PERFORMANCE ----------
     st.subheader("🤖 Model Performance")
 
     m1, m2, m3, m4 = st.columns(4)
@@ -179,33 +181,11 @@ else:
     m3.metric("Recall", f"{metrics['recall']:.2%}")
     m4.metric("F1 Score", f"{metrics['f1_score']:.2%}")
 
-    # ---------------- LIVE AI METRICS ----------------
+    # ---------- LIVE AI METRICS ----------
     st.subheader("📡 Live Prediction Insights")
-    # ---------------- PREDICTION HISTORY CHART ----------------
-if st.session_state.predictions:
-
-    history_df = pd.DataFrame({
-        "Prediction": st.session_state.predictions
-    })
-
-    history_df["Label"] = history_df["Prediction"].map({
-        0: "Safe Customer",
-        1: "Churn Risk"
-    })
-
-    counts = history_df["Label"].value_counts().reset_index()
-    counts.columns = ["Customer Type", "Count"]
-
-    st.subheader("📊 Prediction History")
-
-    st.bar_chart(
-        counts.set_index("Customer Type")
-    )
-
-else:
-    st.info("No predictions yet. Make predictions to see history.")
 
     if st.session_state.predictions:
+
         live_churn = (
             sum(st.session_state.predictions)
             / len(st.session_state.predictions)
@@ -213,14 +193,31 @@ else:
 
         st.metric("Live Predicted Churn Rate", f"{live_churn:.2f}%")
         st.write(f"Total Predictions Made: {len(st.session_state.predictions)}")
+
+        # Prediction History Chart
+        history_df = pd.DataFrame({
+            "Prediction": st.session_state.predictions
+        })
+
+        history_df["Label"] = history_df["Prediction"].map({
+            0: "Safe Customer",
+            1: "Churn Risk"
+        })
+
+        counts = history_df["Label"].value_counts().reset_index()
+        counts.columns = ["Customer Type", "Count"]
+
+        st.subheader("📊 Prediction History")
+        st.bar_chart(counts.set_index("Customer Type"))
+
     else:
         st.info("Make predictions to see live analytics.")
 
-    # ---------------- DATASET METRICS ----------------
+    # ---------- DATASET METRICS ----------
     df = pd.read_csv("data/WA_Fn-UseC_-Telco-Customer-Churn.csv")
 
-    churn_rate = (df["Churn"]=="Yes").mean()*100
-    avg_revenue = df["MonthlyCharges"].mean()*12
+    churn_rate = (df["Churn"] == "Yes").mean() * 100
+    avg_revenue = df["MonthlyCharges"].mean() * 12
 
     c1, c2 = st.columns(2)
 
