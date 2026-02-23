@@ -181,6 +181,29 @@ else:
 
     # ---------------- LIVE AI METRICS ----------------
     st.subheader("📡 Live Prediction Insights")
+    # ---------------- PREDICTION HISTORY CHART ----------------
+if st.session_state.predictions:
+
+    history_df = pd.DataFrame({
+        "Prediction": st.session_state.predictions
+    })
+
+    history_df["Label"] = history_df["Prediction"].map({
+        0: "Safe Customer",
+        1: "Churn Risk"
+    })
+
+    counts = history_df["Label"].value_counts().reset_index()
+    counts.columns = ["Customer Type", "Count"]
+
+    st.subheader("📊 Prediction History")
+
+    st.bar_chart(
+        counts.set_index("Customer Type")
+    )
+
+else:
+    st.info("No predictions yet. Make predictions to see history.")
 
     if st.session_state.predictions:
         live_churn = (
